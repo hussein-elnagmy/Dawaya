@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#007AFF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dawaya">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="icon" href="assets/red-crescent-rx.png" type="image/png">
+  <meta name="description" content="Search medicines in Egypt by brand, generic name, manufacturer, or price. Simple pharmacology and medicine information.">
+  <title>Dawaya — Egypt Medicine Guide</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <script>(()=>{try{const saved=localStorage.getItem('dawaya-theme');document.documentElement.dataset.theme=saved==='dark'||(saved!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(_){document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}})();</script>
+  <link rel="stylesheet" href="styles.css?v=33">
+</head>
+<body data-view="home">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Dawaya home" data-i18n-aria="brandAria"><img class="brand-mark" src="assets/red-crescent-rx.png" alt=""><span><strong id="brandName">Dawaya</strong><small id="brandSubtitle">EGYPT MEDICINE GUIDE</small></span></a>
+    <span class="top-note"><i></i><span id="dbStatus">Connecting to medicine database</span></span>
+    <div class="header-actions"><button id="menuToggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><a class="about-link" id="aboutLink" href="#about"><span data-i18n="aboutLink">About</span> <span>↗</span></a></div>
+  </header>
+
+  <main>
+    <section class="hero" data-main-page="medicines">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="eyebrow">YOUR MEDICINE, MADE CLEAR</span></div>
+        <h1><span data-i18n="heroTitle1">Find a medicine.</span><br><em data-i18n="heroTitle2">Understand it better.</em></h1>
+        <p data-i18n="heroDescription">Search medicines available in Egypt by brand name, active ingredient, company, or price.</p>
+        <div class="hero-meta"><span>✳</span> <span data-i18n="heroMeta">Clear, practical information for everyday questions</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-halo"></div><div class="art-card card-back"></div>
+        <div class="art-card card-front"><div class="pill-pill"><i></i><i></i></div><div class="art-label">MEDICINE<br>GUIDE</div><div class="art-lines"><b></b><b></b><b></b></div></div>
+        <div class="art-dot dot-one">✳</div><div class="art-dot dot-two">+</div><div class="art-caption">Knowledge is<br>part of care</div>
+      </div>
+    </section>
+
+    <section class="search-section" data-main-page="medicines" aria-label="Medicine search">
+      <div class="search-heading"><div><span class="section-kicker" data-i18n="directory">MEDICINE DIRECTORY</span><h2 data-i18n="searchQuestion">What are you looking for?</h2></div><span class="db-count" id="dbCount">Live database</span></div>
+      <div class="search-composer">
+        <div class="search-box">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Search medicines and health conditions" aria-label="Search medicines and health conditions" data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchAria">
+          <button id="clearSearch" class="clear-btn" type="button" aria-label="Clear search" data-i18n-aria="clearAria" hidden>×</button>
+          <button id="searchButton" class="search-btn" type="button" aria-label="Search" data-i18n-aria="searchAria" title="Search"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg></button>
+        </div>
+        <div class="search-by"><label for="searchMode" data-i18n="searchBy">Search by</label><select id="searchMode" aria-label="Choose search field" data-i18n-aria="searchFieldAria"><option value="brand" data-i18n="brandName">Brand name</option><option value="generic" data-i18n="genericName">Generic name / ingredient</option><option value="manufacturer" data-i18n="manufacturer">Manufacturer</option><option value="price" data-i18n="price">Price (EGP)</option></select><span class="select-chevron">⌄</span></div>
+        <div id="suggestions" class="suggestions" role="listbox" aria-label="Medicine suggestions" data-i18n-aria="suggestionsAria" hidden></div>
+      </div>
+      <div class="search-hint"><span data-i18n="searchHint">Try a brand, ingredient, manufacturer, or price</span> <span>·</span> <span data-i18n="searchHintLang">Search in English or Arabic</span></div>
+      <div class="browse-label" data-i18n="browseByLetter">Browse by first letter</div><div class="alphabet-strip" id="medicineAlphabet" role="group" aria-label="Browse medicines by first letter"></div>
+      <div class="group-heading" id="drugGroupHeading" data-i18n="browseDrugGroups">Browse medicine groups</div><div class="drug-group-picker" id="drugGroups" role="group" aria-label="Medicine groups"></div><nav id="drugGroupTrail" class="drug-group-trail" aria-label="Medicine group path"></nav><aside id="drugGroupInfo" class="drug-group-info" aria-live="polite" hidden></aside>
+      <div class="results-head" id="resultsHead" hidden><h3 id="resultsTitle">Search results</h3><span id="resultCount"></span></div>
+      <div class="results-grid" id="results" aria-live="polite"></div>
+      <section id="unifiedConditionSection" class="unified-condition-section" hidden><div class="unified-condition-heading"><h3 data-i18n="conditionMatchesHeading">Matching health conditions</h3><span id="unifiedConditionCount"></span></div><div id="unifiedConditionResults" class="unified-condition-results" aria-live="polite"></div></section>
+      <div class="load-more-wrap" id="moreWrap" hidden><button id="loadMore" class="load-more"><span data-i18n="showMore">Show more</span> <span>↓</span></button></div>
+      <div id="emptyState" class="empty-state" hidden><span>⌕</span><h3 data-i18n="noResults">No medicines found</h3><p data-i18n="noResultsHint">Try another spelling, search field, or ingredient.</p></div>
+      <div id="welcomeState" class="welcome-state"><span class="welcome-icon">✦</span><span data-i18n="welcome">Search to explore medicines in Egypt</span><span class="welcome-examples" data-i18n="popularSearches">Popular searches: Panadol · Augmentin · Brufen · Paracetamol</span></div>
+    </section>
+
+    <section class="conditions-page" id="conditionsPage" data-main-page="conditions" hidden>
+      <h1 class="conditions-list-heading" data-i18n="conditionsListTitle">Health conditions</h1>
+      <div class="condition-search-wrap"><div class="condition-search"><label class="sr-only" for="conditionSearch" data-i18n="conditionsTitle">Health condition</label><input id="conditionSearch" type="search" autocomplete="off" aria-controls="conditionSuggestions" aria-autocomplete="list" placeholder="Search a condition, e.g. asthma" data-i18n-placeholder="conditionSearchPlaceholder"><button id="conditionSearchButton" type="button" data-i18n="conditionSearchButton">Search</button></div><div id="conditionSuggestions" class="suggestions condition-suggestions" role="listbox" aria-label="Condition suggestions" hidden></div></div>
+      <div class="group-heading" data-i18n="browseBodySystems">Browse by body system</div><div class="condition-group-picker" id="conditionGroups" role="group" aria-label="Browse conditions by body system"></div>
+      <div class="browse-label condition-letter-label" data-i18n="browseConditionLetter">Browse conditions by first letter</div><div class="alphabet-strip condition-alphabet" id="conditionAlphabet" role="group" aria-label="Browse conditions by first letter"></div>
+      <div class="condition-quick"><span data-i18n="conditionPopular">Popular topics</span><button type="button" data-condition-query="diabetes" data-i18n="quickDiabetes">Diabetes</button><button type="button" data-condition-query="asthma" data-i18n="quickAsthma">Asthma</button><button type="button" data-condition-query="high blood pressure" data-i18n="quickBloodPressure">High blood pressure</button><button type="button" data-condition-query="migraine" data-i18n="quickMigraine">Migraine</button></div>
+      <p class="condition-source-note" id="conditionAlphabetNote" data-i18n="conditionAlphabetNote">Condition names are mainly English in this terminology database.</p><p class="condition-source-note" data-i18n="conditionsAttribution">Condition names, synonyms, ICD codes and source links from the free NLM ClinicalTables terminology API.</p>
+      <p id="conditionStatus" class="condition-status" data-i18n="conditionSearchHint">Choose a popular topic or search by name.</p>
+      <div id="conditionResults" class="condition-results" aria-live="polite"></div>
+      <aside class="condition-disclaimer"><strong data-i18n="conditionDisclaimerTitle">For education only</strong><p data-i18n="conditionDisclaimer">Treatment depends on the diagnosis and the person. This page does not diagnose or prescribe. Use the source links and consult a licensed healthcare professional.</p></aside>
+    </section>
+
+    <section class="lab-tests-page" id="labTestsPage" data-main-page="lab-tests" hidden>
+      <span class="section-kicker" data-i18n="labTestsEyebrow">LABORATORY TEST DIRECTORY</span>
+      <h1 data-i18n="labTestsTitle">Medical tests</h1>
+      <p class="lab-tests-intro" data-i18n="labTestsIntro">Browse laboratory tests by clinical specialty. Select a test to learn what it checks, how it is performed, and how to prepare.</p>
+      <div class="lab-tests-search"><label class="sr-only" for="labTestSearch" data-i18n="labSearchLabel">Search tests</label><input id="labTestSearch" type="search" data-i18n-placeholder="labSearchPlaceholder" placeholder="Search tests"><button id="labTestSearchClear" type="button" data-i18n="labSearchClear">Clear</button></div>
+      <nav class="lab-breadcrumb" id="labBreadcrumb" aria-label="Test directory path" hidden></nav>
+      <button class="lab-back" id="labBack" type="button" hidden>← <span data-i18n="labBack">Back</span></button>
+      <div class="lab-specialties" id="labSpecialties"></div>
+      <div class="lab-subgroups" id="labSubgroups" hidden></div>
+      <div class="lab-test-list" id="labTestList" hidden></div>
+      <article class="lab-test-detail" id="labTestDetail" hidden></article>
+      <aside class="lab-disclaimer"><strong data-i18n="labDisclaimerTitle">Educational information</strong><p data-i18n="labDisclaimer">Results and reference ranges vary by laboratory and clinical context. This guide does not diagnose disease; follow the ordering clinician's instructions, especially for preparation and medication changes.</p></aside>
+    </section>
+
+    <section class="suggestions-page" id="suggestionsPage" data-main-page="suggestions" hidden>
+      <span class="section-kicker" data-i18n="suggestionsEyebrow">APP SUGGESTIONS</span>
+      <h1 data-i18n="suggestionsTitle">Share a suggestion</h1>
+      <p class="suggestions-intro" data-i18n="suggestionsDescription">Tell us what could make Dawaya more useful.</p>
+      <form id="suggestionsForm" class="suggestion-form">
+        <label for="suggestionEmail" data-i18n="suggestionEmailLabel">Your email</label>
+        <input id="suggestionEmail" name="email" type="email" autocomplete="email" required data-i18n-placeholder="suggestionEmailPlaceholder" placeholder="name@example.com">
+        <label for="suggestionSubject" data-i18n="suggestionSubjectLabel">Subject</label>
+        <input id="suggestionSubject" name="subject" type="text" maxlength="160" required>
+        <label for="suggestionMessage" data-i18n="suggestionMessageLabel">Suggestion</label>
+        <textarea id="suggestionMessage" name="message" rows="7" required></textarea>
+        <button type="submit" class="suggestion-submit" data-i18n="suggestionSubmit">Prepare email</button>
+        <p class="suggestion-email-note" data-i18n="suggestionEmailNote">Gmail will open a prepared message. Press Send there to deliver it.</p>
+        <div id="suggestionFallback" class="suggestion-fallback" hidden>
+          <p data-i18n="suggestionFallbackNote">If Gmail did not open, copy the message details below into your email app.</p>
+          <p><strong data-i18n="suggestionRecipientLabel">Send to</strong>: <span>hussein.sayed994@gmail.com</span></p>
+          <p><strong data-i18n="suggestionSubjectLabel">Subject</strong>: <span id="suggestionFallbackSubject"></span></p>
+          <pre id="suggestionFallbackBody"></pre>
+          <button type="button" id="suggestionCopyButton" data-i18n="suggestionCopy">Copy message</button>
+          <span id="suggestionCopyStatus" role="status" aria-live="polite"></span>
+          <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=hussein.sayed994%40gmail.com" target="_blank" rel="noopener noreferrer" data-i18n="suggestionOpenGmail">Open Gmail</a>
+        </div>
+      </form>
+    </section>
+
+    <section class="about-section" id="about" data-main-page="about" hidden>
+      <div><span class="section-kicker" data-i18n="aboutEyebrow">ABOUT DAWAYA</span><h2><span data-i18n="aboutTitle1">A local guide</span><br><em data-i18n="aboutTitle2">to clearer answers.</em></h2></div>
+      <div class="about-copy"><p data-i18n="aboutText1">Dawaya brings medicines found in Egypt into one searchable directory. Look up brand names, active ingredients, manufacturers, classifications, routes, and listed prices.</p><p data-i18n="aboutText2">Medicine listing data is loaded from an open GitHub dataset. Educational pharmacology notes are separately curated and are not a substitute for an approved product leaflet.</p><p class="developer-credit"><strong data-i18n="developerCredit">Developed by Dr. Hussein Elnagmy</strong><span data-i18n="developerTitle">Clinical Pharmacist</span></p><p class="app-version"><span data-i18n="versionLabel">App version</span> <strong>1.0.0</strong></p><a class="source-link" href="https://github.com/karem505/egyptian-drug-database" target="_blank" rel="noreferrer"><span data-i18n="sourceLink">View medicine data source</span> <span>↗</span></a></div>
+      <div class="about-notices"><section class="disclaimer-strip"><span class="shield">✳</span><div><b data-i18n="disclaimerTitle">For information, not treatment</b><span data-i18n="disclaimerText">Never start, stop, or change a medicine without advice from a qualified healthcare professional.</span></div><a href="#safety"><span data-i18n="readSafety">Read safety note</span> <span>→</span></a></section><section class="safety-section" id="safety"><div class="safety-icon">!</div><div><h2 data-i18n="safetyTitle">Important safety information</h2><p data-i18n="safetyText">This guide is educational and does not provide diagnosis or individualized treatment. Doses and risks depend on the product, age, pregnancy, medical history, and other medicines. Read the product leaflet and ask a doctor or pharmacist. Prices and availability can change; verify locally before use.</p></div></section></div>
+    </section>
+  </main>
+  <footer><a class="brand footer-brand" href="#"><img class="brand-mark" src="assets/red-crescent-rx.png" alt=""><span><strong class="footer-brand-name">Dawaya</strong><small class="footer-brand-subtitle">EGYPT MEDICINE GUIDE</small></span></a><span data-i18n="footerText">Built for learning, not diagnosis or treatment.</span><span data-i18n="footerSource">Medicine listings: CC0 · GitHub source</span></footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <article class="drug-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close" data-i18n-aria="closeAria">×</button>
+      <figure class="medicine-image-panel" id="modalImagePanel" hidden><button id="modalImageSearch" class="modal-image-search" type="button" aria-label="Search Google Images for this medicine" data-i18n-aria="imageSearchAria"><div id="modalImage" class="modal-image"></div></button><figcaption id="modalImageCaption">Illustrative medicine image</figcaption><button id="modalImageShowImages" class="medicine-image-open" type="button" data-i18n="showMedicineImages">Show images</button></figure>
+      <div class="modal-topline"><span class="drug-type" id="modalClass">Medicine guide</span><span class="modal-brand" id="modalManufacturer"></span></div>
+      <h2 id="modalTitle"></h2><p class="modal-english" id="modalEnglish"></p><p class="modal-arabic" id="modalArabic" lang="ar" dir="rtl"></p>
+      <div class="modal-facts" id="modalFacts"></div>
+      <div class="detail-tabs"><button class="detail-tab active" data-panel="overview" data-i18n="tabOverview">Overview</button><button class="detail-tab" data-panel="use" data-i18n="tabUse">Use & side effects</button><button class="detail-tab" data-panel="caution" data-i18n="tabSafety">Safety</button></div>
+      <div class="detail-panel" id="overviewPanel"></div><div class="detail-panel" id="usePanel" hidden></div><div class="detail-panel" id="cautionPanel" hidden></div>
+      <div class="modal-disclaimer" data-i18n="modalDisclaimer">Educational information only. Always check the product leaflet and consult a healthcare professional.</div>
+    </article>
+  </div>
+  <div class="modal-backdrop condition-detail-backdrop" id="conditionDetailBackdrop" hidden>
+    <article class="drug-modal condition-detail-modal" role="dialog" aria-modal="true" aria-labelledby="conditionDetailTitle">
+      <button class="modal-close" id="conditionDetailClose" aria-label="Close" data-i18n-aria="closeAria">×</button>
+      <div class="modal-topline"><span class="drug-type" data-i18n="conditionDetailLabel">HEALTH CONDITION</span><span class="modal-brand" id="conditionDetailCode"></span></div>
+      <h2 id="conditionDetailTitle"></h2>
+      <p class="condition-detail-alias" id="conditionDetailAliases"></p>
+      <div id="conditionDetailBody" class="condition-detail-body" aria-live="polite"></div>
+      <div id="conditionWikipediaSummary" class="condition-wikipedia-summary" aria-live="polite"></div>
+      <div id="conditionDetailSources" class="condition-links"></div>
+      <div class="modal-disclaimer" data-i18n="conditionDisclaimer">Treatment depends on the diagnosis and the person. This page does not diagnose or prescribe. Use the source links and consult a licensed healthcare professional.</div>
+    </article>
+  </div>
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden><aside class="app-drawer" role="dialog" aria-modal="true" aria-label="Navigation"><div class="drawer-head"><strong>Dawaya</strong><button id="menuClose" type="button" aria-label="Close menu">×</button></div><nav class="drawer-nav"><button type="button" data-drawer-action="unified-search">Search for a medicine or condition</button><button type="button" data-drawer-action="medicine-list">Medicine list <small>Browse by group or letter</small></button><button type="button" data-drawer-action="condition-list">Condition list <small>Browse by body system or letter</small></button><button type="button" data-drawer-action="lab-tests" data-i18n="labMenu">Medical tests</button><button type="button" data-drawer-action="suggestions" data-i18n="suggestionsMenu">Suggestions</button><a href="#about" data-drawer-action="about">About Dawaya</a></nav><div class="drawer-bottom"><p class="drawer-safety-note" data-i18n="drawerSafetyNote">For information only. Ask a healthcare professional.</p><div class="drawer-bottom-actions"><button id="languageToggle" class="language-toggle" type="button" aria-label="Switch to Arabic" lang="ar">العربية</button><button id="themeToggle" class="theme-icon-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 15.2A8.4 8.4 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/></svg></button></div></div></aside></div>
+  <div class="external-browser" id="externalBrowser" hidden><div class="external-browser-bar"><button id="externalBack" type="button">← <span>Back to Dawaya</span></button><strong id="externalTitle">External page</strong><a id="externalOpen" href="#" target="_blank" rel="noopener noreferrer">Open in browser ↗</a></div><iframe id="externalFrame" title="External website"></iframe></div>
+  <script src="lab-tests.js?v=34"></script>
+  <script src="app.js?v=34"></script>
+  <script>if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./service-worker.js').catch(() => {});</script>
+</body>
+</html>
